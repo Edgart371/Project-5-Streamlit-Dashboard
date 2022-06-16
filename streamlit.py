@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
 """
+<<<<<<< HEAD
 Created on Wed Jun 15 17:14:17 2022
 
 @author: leube
+Created on Wed Jun 15 15:30:27 2022
+
+@author: matui
+>>>>>>> 9e3e1b524221f0a6d71f47353fbac6f42cb887f1
 """
 
 import streamlit as st
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -15,6 +21,62 @@ from scipy import stats
 from matplotlib.axis import Axis
 
 from sklearn.preprocessing import LabelEncoder
+
+
+
+survival1 = pd.read_csv(r"C:\Users\leube\Downloads\survival.csv", sep=";")
+
+################### LAYOUT & INTRO ###################
+
+st.set_page_config(layout="wide")
+st.title('Patient Survival Data')
+st.write('Analysis of dead people')
+st.sidebar.write('Ferdinand Leube')
+st.sidebar.write('Edgar Tomé')
+st.sidebar.write('Mathieu Jomain')
+st.write('Dataset of ~ 80k rows')
+st.text("")
+st.text("")
+
+
+################### Admit source/death - CROSSTAB #######################
+
+#crosstab
+st.write('Number of alive/dead people by admission source')
+cross1 = pd.crosstab(survival1['icu_admit_source'], survival1['hospital_death'])
+cross1 = cross1.rename(columns={0:'Nb alive', 1:'Nb dead'})
+st.table(cross1)
+
+################### gender/death - CROSSTAB #######################
+
+#crosstab
+st.write('Number of alive/dead people by gender')
+cross2 = pd.crosstab(survival1['gender'], survival1['hospital_death'])
+cross2 = cross2.rename(columns={0:'Nb alive', 1:'Nb dead'})
+st.table(cross2)
+
+################### ethnicity/death - CROSSTAB #######################
+
+#crosstab
+st.write('Number of alive/dead people by ethnicity')
+cross3 = pd.crosstab(survival1['ethnicity'], survival1['hospital_death'])
+cross3 = cross3.rename(columns={0:'Nb alive', 1:'Nb dead'})
+st.table(cross3)
+
+################### STATISTICS #######################
+st.write('Statistics for heart rate by gender')
+if st.checkbox('Show dataframe'):
+        chart_data = (survival1.groupby('gender')['d1_heartrate_max','d1_heartrate_min'].agg(['mean', 'max', 'min']))
+        chart_data
+
+st.write('Statistics for glucose rate by gender')
+if st.checkbox('Show dataframe',1):
+        chart_data2 = (survival1.groupby('gender')['d1_glucose_max','d1_glucose_min'].agg(['mean', 'max', 'min']))
+        chart_data2
+
+
+################### IMAGE #######################
+# image = Image.open(r'C:\Users\matui\Downloads\cat.jpg')
 
 data = pd.read_csv(r"C:\Users\leube\Downloads\survival_rate_patients.csv")
 survival = pd.DataFrame(data)
@@ -120,7 +182,7 @@ def age_pie_chart(sickness):
 
     #create pie chart
     plt.pie(data,explode = explode, colors = colors, autopct='%.0f%%')
-    plt.legend(labels, bbox_to_anchor=(1.2, 1.0), loc='upper left')
+    plt.legend(labels=list(dataforchart['age_bins'].unique()), bbox_to_anchor=(1.2, 1.0), loc='upper left')
     return plt.show()
 
 def weight_pie_chart(sickness):  
@@ -149,7 +211,7 @@ def weight_pie_chart(sickness):
 
     #create pie chart
     plt.pie(data,explode = explode, colors = colors, autopct='%.0f%%')
-    plt.legend(labels, bbox_to_anchor=(1.2, 1.0), loc='upper left')
+    plt.legend(labels=list(dataforchart['weight_bins'].unique()),bbox_to_anchor=(1.2, 1.0), loc='upper left')
     return plt.show()
 
 
@@ -163,7 +225,7 @@ def height_pie_chart(sickness):
     dataforchart.reset_index(inplace=True)
     
     values = dataforchart[1].sum()
-    dataforchart.loc[(dataforchart[1]/values < 0.05),'height_bins']='other'
+    dataforchart.loc[(dataforchart[1]/values <= 0.05),'height_bins']='other'
     dataforchart = dataforchart.groupby(by='height_bins').agg({1:'sum'})
     dataforchart.reset_index(inplace=True)
     dataforchart.loc[(dataforchart[1]== np.nan), 1] = 0
@@ -179,7 +241,7 @@ def height_pie_chart(sickness):
 
     #create pie chart
     plt.pie(data,explode = explode, colors = colors, autopct='%.0f%%')
-    plt.legend(labels, bbox_to_anchor=(1.2, 1.0), loc='upper left')
+    plt.legend(labels=list(dataforchart['height_bins'].unique()),bbox_to_anchor=(1.2, 1.0), loc='upper left')
     return plt.show()
 
 
@@ -224,7 +286,7 @@ option = st.selectbox(
      'What sickness would you like to see analyzed?',
      ('cirrhosis', 'aids', 'diabetes','hepatic_failure','immunosuppression','leukemia','lymphoma','solid_tumor_with_metastasis'))
 
-st.write('You selected:', option)
+st.header(option)
 
 diseases = ['cirrhosis', 'aids', 'diabetes','hepatic_failure','immunosuppression','leukemia','lymphoma','solid_tumor_with_metastasis']
 
@@ -258,5 +320,46 @@ for disease in diseases:
 
 
 
+## function to show certain statistical info for data of sickness
+from scipy.stats import ttest_ind
+
+def stats_info_two_sick_same_survival(sickness1,sickness2):
+    datasick1 = survival[survival[sickness1]==1]
+    datasick2 = survival[survival[sickness2]==1]
+    i = ttest_ind(datasick1['hospital_death'],datasick2['hospital_death'], equal_var=False).pvalue
+    
+    if i>0.05:
+        return 'With a 95% confidence level we can say that patients with either of the two diseases have a similar death rate'
+    else:
+        return 'The survival rate for the patients with the two diseases are significantly different'
+
+a = stats_info_two_sick_same_survival('cirrhosis','aids')
+print(a)
 
 
+
+select1 = st.selectbox(
+     'What disease would you like to choose?',
+     ('cirrhosis', 'aids', 'diabetes','hepatic_failure','immunosuppression','leukemia','lymphoma','solid_tumor_with_metastasis'))
+
+select2 = st.selectbox(
+     'What sickness would you like to compare the previous disease to?',
+     ('cirrhosis', 'aids', 'diabetes','hepatic_failure','immunosuppression','leukemia','lymphoma','solid_tumor_with_metastasis'))
+
+st.header(select1, select2)
+
+select1 = 'cirrhosis'
+select2 = 'aids'
+
+for disease1 in diseases:
+    for disease2 in diseases:
+        if disease1 == select1 and disease2 == select2:
+            a = stats_info_two_sick_same_survival(disease1,disease2)
+            st.write(a)
+            
+
+
+numh = survival['hospital_id'].nunique()
+nump = survival['patient_id'].nunique()
+
+st.write(f'The data has been collected from over {numh} different hospitals and summarizes data taken from over {nump}.')
