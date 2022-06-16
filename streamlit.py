@@ -333,10 +333,6 @@ def stats_info_two_sick_same_survival(sickness1,sickness2):
     else:
         return 'The survival rate for the patients with the two diseases are significantly different'
 
-a = stats_info_two_sick_same_survival('cirrhosis','aids')
-print(a)
-
-
 
 select1 = st.selectbox(
      'What disease would you like to choose?',
@@ -348,8 +344,6 @@ select2 = st.selectbox(
 
 st.header(select1, select2)
 
-select1 = 'cirrhosis'
-select2 = 'aids'
 
 for disease1 in diseases:
     for disease2 in diseases:
