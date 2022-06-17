@@ -24,11 +24,11 @@ from sklearn.preprocessing import LabelEncoder
 
 
 
-survival1 = pd.read_csv(r"C:\Users\leube\Downloads\survival.csv", sep=";")
+survival1 = pd.read_csv(r"C:\Users\leube\Ironhack\Ironprojects\Module_2\Project5\clean_surv.csv", sep=";")
 
 ################### LAYOUT & INTRO ###################
 
-st.set_page_config(layout="wide")
+# st.set_page_config(layout="wide")
 st.title('Patient Survival Data')
 st.write('Analysis of dead people')
 st.sidebar.write('Ferdinand Leube')
@@ -78,7 +78,7 @@ if st.checkbox('Show dataframe',1):
 ################### IMAGE #######################
 # image = Image.open(r'C:\Users\matui\Downloads\cat.jpg')
 
-data = pd.read_csv(r"C:\Users\leube\Downloads\survival_rate_patients.csv")
+data = pd.read_csv(r"C:\Users\leube\Ironhack\Ironprojects\Module_2\Project5\clean_surv.csv")
 survival = pd.DataFrame(data)
 
 list_wanted_columns = ['patient_id', 'hospital_id', 'age', 'ethnicity', 'gender', 'height','icu_admit_source','weight','aids','cirrhosis', 'diabetes_mellitus','hepatic_failure', 'immunosuppression', 'leukemia', 'lymphoma','solid_tumor_with_metastasis','hospital_death','d1_heartrate_max', 'd1_heartrate_min','d1_glucose_max', 'd1_glucose_min']
