@@ -24,8 +24,7 @@ from sklearn.preprocessing import LabelEncoder
 
 
 
-survival1 = pd.read_csv(r"C:\Users\leube\Ironhack\Ironprojects\Module_2\Project5\clean_surv.csv", sep=";")
-
+survival1 = pd.read_csv(r"C:\Users\leube\Ironhack\Ironprojects\Module_2\Project5\clean_surv.csv", sep=",")
 ################### LAYOUT & INTRO ###################
 
 # st.set_page_config(layout="wide")
@@ -38,6 +37,7 @@ st.write('Dataset of ~ 80k rows')
 st.text("")
 st.text("")
 
+st.write('This data analysis does not serve the purpose of gaining meaningfull real life medical insights. The creator of this project have no medical background what so ever and retrieved this data set for the sole purpose of further practicing data cleaning/processing and getting comfortable with streamlit applications.')
 
 ################### Admit source/death - CROSSTAB #######################
 
@@ -46,7 +46,7 @@ st.write('Number of alive/dead people by admission source')
 cross1 = pd.crosstab(survival1['icu_admit_source'], survival1['hospital_death'])
 cross1 = cross1.rename(columns={0:'Nb alive', 1:'Nb dead'})
 st.table(cross1)
-
+cross1
 ################### gender/death - CROSSTAB #######################
 
 #crosstab
@@ -166,7 +166,7 @@ def age_pie_chart(sickness):
     dataforchart.reset_index(inplace=True)
     
     values = dataforchart[1].sum()
-    dataforchart.loc[(dataforchart[1]/values < 0.05),'age_bins']='other'
+    dataforchart.loc[(dataforchart[1]/values < 0.08),'age_bins']='other'
     dataforchart = dataforchart.groupby(by='age_bins').agg({1:'sum'})
     dataforchart.reset_index(inplace=True)
     dataforchart.loc[(dataforchart[1]== np.nan), 1] = 0
@@ -183,6 +183,7 @@ def age_pie_chart(sickness):
     #create pie chart
     plt.pie(data,explode = explode, colors = colors, autopct='%.0f%%')
     plt.legend(labels=list(dataforchart['age_bins'].unique()), bbox_to_anchor=(1.2, 1.0), loc='upper left')
+    fig.set_size_inches(10, 7)
     return plt.show()
 
 def weight_pie_chart(sickness):  
@@ -195,7 +196,7 @@ def weight_pie_chart(sickness):
     dataforchart.reset_index(inplace=True)
     
     values = dataforchart[1].sum()
-    dataforchart.loc[(dataforchart[1]/values < 0.05),'weight_bins']='other'
+    dataforchart.loc[(dataforchart[1]/values < 0.08),'weight_bins']='other'
     dataforchart = dataforchart.groupby(by='weight_bins').agg({1:'sum'})
     dataforchart.reset_index(inplace=True)
     dataforchart.loc[(dataforchart[1]== np.nan), 1] = 0
@@ -212,6 +213,7 @@ def weight_pie_chart(sickness):
     #create pie chart
     plt.pie(data,explode = explode, colors = colors, autopct='%.0f%%')
     plt.legend(labels=list(dataforchart['weight_bins'].unique()),bbox_to_anchor=(1.2, 1.0), loc='upper left')
+    fig.set_size_inches(10, 7)
     return plt.show()
 
 
@@ -225,7 +227,7 @@ def height_pie_chart(sickness):
     dataforchart.reset_index(inplace=True)
     
     values = dataforchart[1].sum()
-    dataforchart.loc[(dataforchart[1]/values <= 0.05),'height_bins']='other'
+    dataforchart.loc[(dataforchart[1]/values <= 0.08),'height_bins']='other'
     dataforchart = dataforchart.groupby(by='height_bins').agg({1:'sum'})
     dataforchart.reset_index(inplace=True)
     dataforchart.loc[(dataforchart[1]== np.nan), 1] = 0
@@ -242,6 +244,7 @@ def height_pie_chart(sickness):
     #create pie chart
     plt.pie(data,explode = explode, colors = colors, autopct='%.0f%%')
     plt.legend(labels=list(dataforchart['height_bins'].unique()),bbox_to_anchor=(1.2, 1.0), loc='upper left')
+    fig.set_size_inches(10, 7)
     return plt.show()
 
 
@@ -260,6 +263,7 @@ def gender_sickness(sickness):
     dataforchart.reset_index(inplace=True)
 
     sns.barplot(x='gender_encoded', y=1, data=dataforchart)
+    fig.set_size_inches(10, 7)
     plt.legend()
     return plt.show()
 
@@ -278,6 +282,7 @@ def death_sickness(sickness):
     dataforchart.reset_index(inplace=True)
 
     sns.barplot(x='hospital_death', y=1, data=dataforchart)
+    fig.set_size_inches(10, 7)
     plt.legend()
     return plt.show()
 
